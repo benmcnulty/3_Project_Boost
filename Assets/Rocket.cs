@@ -15,7 +15,7 @@ public class Rocket : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         ProcessInput();
-	}
+    }
 
     private void ProcessInput()
     {
@@ -26,11 +26,11 @@ public class Rocket : MonoBehaviour {
 
         if (Input.GetKey(KeyCode.A))
         {
-            print("Rotating left");
+            transform.Rotate(Vector3.forward * 30 * Time.deltaTime, Space.Self);
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            print("Rotating right");
+            transform.Rotate(-Vector3.forward * 30 * Time.deltaTime, Space.Self);
         }
 
     }

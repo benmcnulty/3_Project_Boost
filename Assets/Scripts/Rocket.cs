@@ -49,6 +49,9 @@ public class Rocket : MonoBehaviour {
             case "Friendly":
                 // do nothing
                 break;
+            case "Fuel":
+                StartFuelSequence(collision.gameObject);
+                break;
             case "Finish":
                 StartSuccessSequence();
                 break;
@@ -67,6 +70,12 @@ public class Rocket : MonoBehaviour {
         audioSource.PlayOneShot(success);
         successParticles.Play();
         Invoke("LoadNextLevel", levelLoadDelay);
+    }
+
+    private void StartFuelSequence(GameObject gameObject)
+    {
+        Destroy(gameObject);
+        successParticles.Play();
     }
 
     private void StartDeathSequence()

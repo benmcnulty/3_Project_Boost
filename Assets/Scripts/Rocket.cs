@@ -21,11 +21,16 @@ public class Rocket : MonoBehaviour {
     enum State { Alive, Dying, Transcending }
     State state = State.Alive;
 
+    bool collisionsDisabled = false;
+
+    int currentSceneIndex;
+
     // Use this for initialization
     void Start () {
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
-	}
+        currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -34,12 +39,16 @@ public class Rocket : MonoBehaviour {
             RespondToThrustInput();
             RespondToRotateInput();
         }
-        
+ 
+        if (Debug.isDebugBuild)
+        {
+            RespondToDebugInput();
+        }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive)
+        if (state != State.Alive || collisionsDisabled)
         {
             return;
         }
@@ -86,19 +95,27 @@ public class Rocket : MonoBehaviour {
 
         audioSource.PlayOneShot(death);
         deathParticles.Play();
-        Invoke("LoadFirstLevel", levelLoadDelay);
+        Invoke("ReloadCurrentLevel", levelLoadDelay);
     }
 
 
 
     private void LoadNextLevel()
     {
-        SceneManager.LoadScene(1); // todo allow for more than 2 levels
+        int sceneCount = SceneManager.sceneCountInBuildSettings;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        if (nextSceneIndex == sceneCount)
+        {
+            nextSceneIndex = 0; // loop back to start
+        }
+
+        SceneManager.LoadScene(nextSceneIndex);
     }
 
-    private void LoadFirstLevel()
+    private void ReloadCurrentLevel()
     {
-        SceneManager.LoadScene(0); // todo allow for more than 2 levels
+        SceneManager.LoadScene(currentSceneIndex);
     }
 
     private void RespondToThrustInput()
@@ -113,6 +130,20 @@ public class Rocket : MonoBehaviour {
             mainEngineParticles.Stop();
         }
     }
+
+    private void RespondToDebugInput()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadNextLevel();
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            collisionsDisabled = !collisionsDisabled; // toggle collisions
+        }
+    }
+
+    
 
     private void ApplyThrust()
     {

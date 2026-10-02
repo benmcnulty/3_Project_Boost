@@ -2,7 +2,7 @@
 
 A historical GameDev.tv Unity 3D course project (Section 3), as identified in the
 repository description. It records course-guided Unity/C# learning from 2018;
-it is not represented as a independently authored commercial game.
+it is not represented as an independently authored commercial game.
 
 ## Review the implementation
 
